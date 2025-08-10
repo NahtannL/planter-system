@@ -35,6 +35,13 @@ dependencies:
     - esp32s2
     - esp32s3
     version: 1.2.5
+  espressif/json_generator:
+    component_hash: 45033e1c199b13f1c8c1b544fb7d4e2df6a8e3071ebdcb1b22582b61a7974ff2
+    dependencies: []
+    source:
+      registry_url: https://components.espressif.com/
+      type: service
+    version: 1.1.2
   espressif/led_strip:
     component_hash: 223998f10cae6d81f2ad2dd3c1103c2221be298c708e37917482b0153f3ec64e
     dependencies:
@@ -52,8 +59,9 @@ dependencies:
 direct_dependencies:
 - esp-idf-lib/esp_idf_lib_helpers
 - esp-idf-lib/hd44780
+- espressif/json_generator
 - espressif/led_strip
 - idf
-manifest_hash: b133792e40ed3dcb2887e5be2ccc2c61d3bcf18fb9cbb4b50806b0ce7bdb2254
+manifest_hash: 8171c1f2be1cc400560a0a087486db78f47e52f91afd201eae082e28d4882192
 target: esp32s3
 version: 2.0.0
