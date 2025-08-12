@@ -1,6 +1,6 @@
 #include "planter_utils.h"
 
-void button_interrupt(char* str) {
+int button_interrupt(char* str) {
     // Print message
     printf("%s", str);
 
@@ -8,12 +8,12 @@ void button_interrupt(char* str) {
     while (true) {
         if (gpio_get_level(GPIO_NUM_1)) {
             vTaskDelay(1000 / portTICK_PERIOD_MS);
-            return;
+            return 1;
         }
         vTaskDelay(100 / portTICK_PERIOD_MS);
     }
 
-    return;
+    return 0;
 }
 
 void display_rgb(const int r, const int g, const int b, const int delay) {
@@ -38,6 +38,9 @@ void display_rgb(const int r, const int g, const int b, const int delay) {
 
     // Turn off RGB
     led_strip_clear(led_strip);
+    
+    // Remove LED strip device
+    led_strip_del(led_strip);
 }
 
 int init_wifi(void) {
@@ -134,4 +137,22 @@ int get_current_min(void) {
     struct tm* timeinfo = localtime(&now);
 
     return timeinfo->tm_min;
+}
+
+float get_chip_temp() {
+    temperature_sensor_handle_t temp_handle = NULL;
+    temperature_sensor_config_t temp_sensor_config_low = 
+        TEMPERATURE_SENSOR_CONFIG_DEFAULT(-10, 80);
+    if (temperature_sensor_install(&temp_sensor_config_low, &temp_handle) != ESP_OK) {
+        return -1.00;
+    }
+
+    temperature_sensor_enable(temp_handle);
+
+    float tsens_out = -1;    
+    temperature_sensor_get_celsius(temp_handle, &tsens_out);
+    temperature_sensor_disable(temp_handle);
+
+    temperature_sensor_uninstall(temp_handle);
+    return tsens_out;
 }

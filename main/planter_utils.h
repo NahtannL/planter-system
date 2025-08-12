@@ -15,6 +15,7 @@
 #include <stdio.h>
 
 #include "driver/gpio.h"
+#include "driver/temperature_sensor.h"
 #include "esp_mac.h"
 #include "esp_wifi.h"
 #include "led_strip.h"
@@ -31,7 +32,7 @@
  * @note This pin number can be different for every development board. Please
  * check to make sure this matches your boards.
  */
-#define RGB_PIN 38
+#define RGB_PIN 48
 
 /**
  * @brief Wait for button press with prompt message
@@ -41,8 +42,12 @@
  * 
  * @param str Prompt message to display
  * 
+ * @return
+ * - 0: button not pressed
+ * - 1: button pressed
+ * 
  */
-void button_interrupt(char* str);
+int button_interrupt(char* str);
 
 /**
  * @brief Display RGB value on ESP32
@@ -56,6 +61,7 @@ void button_interrupt(char* str);
  * @param delay Duration to keep RGB on (in ms)
  * 
  * @warning Ensure RGB_PIN is configured before calling.
+ * 
  */
 void display_rgb(const int r, const int g, const int b, const int delay);
 
@@ -128,5 +134,7 @@ int get_current_hour(void);
  * 
  */
 int get_current_min(void);
+
+float get_chip_temp();
 
 #endif
