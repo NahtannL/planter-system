@@ -1,34 +1,64 @@
-# Planter System
+# ESP32-S3 Plant Monitoring System
 
-A simple, scalable planter system that integrates soil moisture sensors and a
-single 4-way solenoid valve to automate watering plants based on sensor values.
-Sensor values from the system are published on a database to track moisture
-levels with capabilities to create graphs based on the values.
+A scalable planter system integrating soil moisture sensor(s) and solenoid
+valve(s) with a Firebase Realtime Database for periodic tracking and simple
+control.
+
+## Features
+
+- Soil moisture monitoring with capacitive sensor(s)
+- Solenoid valve control
+- Wi-Fi connectivity for communication
+- Firebase Realtime Database integration
+- Sensor calibration
+- Periodic Data logging with timestamps
 
 ## Equipment
-* Espressif ESP32-S3-DevkitC-1-N8R8
+
+### Required Hardware
+* ESP32-S3-DevkitC-1-N8R8
 * Gikfun Capacitive Soil Moisture Sensor v1.2
 * Magnetic Solenoid Water Drain Valve
 * Elegoo 4 Channel 5V 10A Relay Module 
 * DC Power Supply Adapter System (more info later)
 
-### Espressif ESP32-S3-KevkitC-1-N8R8
-The ESP32-S3 was chosen given its multitude of GPIO pins and its wireless
-capabilities.
+### Optional Hardware
+* RGB LED
+* Push Button
 
-### Elegoo 4 Channel 5V 10A Relay Module
-Since the solenoid valves operate on a higher voltage compared to the ESP32
-microcontroller, a relay module must be used to operate it. The relay module
-used in this system is equipped with an octocoupler, keeping the voltages
-between the solenoid valve and ESP32 isolated.
+## Installation
 
-### DC Power Supply Adapter System
-Powering the entire system requires two different voltages, one for the solenoid
-and the other for the microcontroller. The option we opted for is a step-down
-module with a 19V barrel plug power supply. The 19V is connected to the
-solenoid valves, and the output from the step-down module is connected to the
-microcontroller.
+### Prerequisites
+- ESP-IDF v5.5
+- Firebase Realtime Database
+- WiFi connection
 
-## Circuit
-Here is the complete circuit that was used in this system:
-TBD
+### Setup steps
+1. Clone repository
+```bash
+git clone https://github.com/NahtannL/planter-system.git
+cd planter-system
+```
+
+2. Configure credentials
+Replace the following values in `main/secrets.h`
+```c
+#define USER_SSID "SSID"
+#define USER_PASS "PASS"
+#define FIREBASE_URL "https://<database_name>.firebaseio.com/"
+#define FIREBASE_API_KEY "SAMPLE_API_KEY"
+```
+
+4. Configure components
+In the main file, update `sensors[]`, `num_channels`, `valves[]`, `num_valves`
+with the information that matches your setup
+
+5. Initial values (First-time setup)
+Before the first time you flash and execute the program on the ESP32 board,
+uncomment the calibrate_sens() line, if not already uncommented, and find the
+wet and dry values for your soil moisture sensors. These values are
+automatically updated when calibrate_sens() is run, but if you want to remove
+this step, set the mean values for each sensor and state in the `sensors[]`
+list.
+
+6. Build and flash
