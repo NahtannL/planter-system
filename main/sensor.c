@@ -1,7 +1,7 @@
 #include "sensor.h"
 
-adc_oneshot_unit_handle_t init_adc(adc_unit_t adc_unit, 
-    sensor* sensor_list, int len) {
+adc_oneshot_unit_handle_t init_adc(adc_unit_t adc_unit, sensor* sensor_list, 
+    int len) {
         adc_oneshot_unit_handle_t adc1_handle;
 
         adc_oneshot_unit_init_cfg_t unit_config = {
@@ -10,7 +10,7 @@ adc_oneshot_unit_handle_t init_adc(adc_unit_t adc_unit,
         adc_oneshot_new_unit(&unit_config, &adc1_handle);
 
         adc_oneshot_chan_cfg_t channel_config = {
-            .atten = ADC_ATTEN_DB_11,
+            .atten = ADC_ATTEN_DB_12,
             .bitwidth = ADC_BITWIDTH_12
         };
 

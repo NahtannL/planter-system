@@ -41,9 +41,9 @@ extern const char certificate_pem_end[]   asm("_binary_certificate_pem_end");
  * Firebase Realtime Database. Firebase URL and authentication headers are
  * configured.
  * 
- * @param data_table_name Name of database table for data storage
- * @param firebase_url Base URL of database
- * @param firebase_api_key Firebase API key for authentication
+ * @param[in] data_table_name Name of database table for data storage
+ * @param[in] firebase_url Base URL of database
+ * @param[in] firebase_api_key Firebase API key for authentication
  * 
  * @return esp_http_client_handle_t: Configured HTTP client handle
  * @retval NULL Client: Setup failed
@@ -63,8 +63,8 @@ esp_http_client_handle_t setup_client(char* data_table_name, char* firebase_url,
  * Performs HTTP POST request to Firebase Realtime Database with sensor data in
  * JSON format.
  * 
- * @param client HTTP client handle
- * @param json_data JSON formatted string containing sensor data
+ * @param[in] client HTTP client handle
+ * @param[in] json_data JSON formatted string containing sensor data
  * 
  * @retval 0 POST request successful
  * @retval -1 POST request failed
@@ -77,12 +77,44 @@ esp_http_client_handle_t setup_client(char* data_table_name, char* firebase_url,
 int post_data(esp_http_client_handle_t client, const char* json_data);
 
 /**
+ * @brief Send JSON data to Firebase Realtime Database using a PATCH request
+ * 
+ * Performs HTTP PATCH request to Firebase Realtime Database for updating 
+ * values.
+ * 
+ * @retval 0 PATCH request successful
+ * @retval 1 PATCH request failed
+ * 
+ * @see setup_client()
+ * 
+ */
+int patch_data(esp_http_client_handle_t client, const char* json_data);
+
+/**
+ * @brief Retrieve data from Firebase
+ * 
+ * Performs HTTP GET request to fetch data from Firebase Realtime Database.
+ * 
+ * @param[in] client client handle
+ * @param[out] buffer recieved data
+ * @param[in] len length of buffer
+ * 
+ * @retval 0 GET request successful
+ * @retval -1 GET request failed
+ * 
+ * @see setup_client()
+ * 
+ */
+int get_data(esp_http_client_handle_t client, char* buffer, int len);
+
+/**
  * @brief Clean up and close HTTP client
  * 
- * @param client HTTP client handle
+ * @param[in] client client handle
  * 
  * @note Must be called to prevent memory leaks
  * @see setup_client()
+ * 
  */
 void close_client(esp_http_client_handle_t client);
 

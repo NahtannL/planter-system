@@ -42,7 +42,7 @@
  * gauged by the user.
  * 
  */
-#define DEFAULT_DRY 2615
+#define DEFAULT_DRY 2660
 
 /**
  * @def DEFAULT_WET
@@ -58,7 +58,7 @@
  * gauged by the user.
  * 
  */
-#define DEFAULT_WET 1040
+#define DEFAULT_WET 1000
 
 /**
  * @brief Soil moisture sensor configuration structure
@@ -81,20 +81,20 @@ typedef struct {
  * ADC pins are setup with appropriate bit width and attenuation for accurate
  * moisture level measurements.
  * 
- * @param adc_unit ADC pin unit (e.g. ADC_UNIT_1)
- * @param sensor_list Array of sensor strctures
- * @param len Number of sensors in array
+ * @param[in] adc_unit ADC pin unit (e.g. ADC_UNIT_1)
+ * @param[in] sensor_list Array of sensor strctures
+ * @param[in] len Number of sensors in array
  * 
- * @return adc_oneshot_unit_handle object: Configured ADC unit handle
- * @retval NULL: initialization failed
+ * @return adc_oneshot_unit_handle_t: Configured ADC unit handle, or NULL on
+ * failure
  * 
  * @note Must be called before sensor readings
  * @warning Ensure all sensor units and channels are valid
  * @see read_sens()
  * 
  */
-adc_oneshot_unit_handle_t init_adc(adc_unit_t adc_unit, 
-    sensor* sensor_list, int len);
+adc_oneshot_unit_handle_t init_adc(adc_unit_t adc_unit, sensor* sensor_list, 
+    int len);
 
 /**
  * @brief Calibrate moisture sensors
@@ -103,11 +103,12 @@ adc_oneshot_unit_handle_t init_adc(adc_unit_t adc_unit,
  * conditions. Calculates and stores mean calibration values for each sensor
  * for accurate sensor mapping.
  * 
- * @param adc_handle ADC unit handle
- * @param sensors Array of sensor structures
- * @param len Number of sensors
+ * @param[in] adc_handle ADC unit handle
+ * @param[in, out] sensors Array of sensor structures
+ * @param[in] len Number of sensors
  * 
  * @warning init_adc() must be called before function call
+ * 
  */
 void sens_calibrate(adc_oneshot_unit_handle_t adc_handle, 
     sensor* sensors, int len);
@@ -118,11 +119,11 @@ void sens_calibrate(adc_oneshot_unit_handle_t adc_handle,
  * Performs a single shot ADC reading from a specified sensor channel and
  * returns the raw digital value. Should be used with map() function.
  * 
- * @param handle ADC unit handle
- * @param chan ADC channel
+ * @param[in] handle ADC unit handle
+ * @param[in] chan ADC channel
  * 
  * @return Raw sensor reading
- * @retval -1: Reading failed
+ * @retval -1 Reading failed
  * 
  * @see map()
  * @see init_adc()
@@ -136,11 +137,10 @@ int read_sens(adc_oneshot_unit_handle_t handle, adc_channel_t chan);
  * Maps raw sensor reading to moisture percentage (0 - 1) using calibrated
  * data.
  * 
- * @param sens Sensor structure
- * @param val Raw ADC reading value
+ * @param[in] sens Sensor structure
+ * @param[in] val Raw ADC reading value
  * 
  * @return Moisture percentage (0.0 - 1.0)
- * 
  * @warning Mapped values are clamped from 0 to 1
  * @note Return value must be multiplied by 100 for percentage
  * 
@@ -154,8 +154,8 @@ double map(sensor sens, double val);
  * 
  * Utility function to compute the mean of an array of double values.
  * 
- * @param arr Array of double values
- * @param len Number of elements in array
+ * @param[in] arr Array of double values
+ * @param[in] len Number of elements in array
  * 
  * @return Mean of array values
  * 

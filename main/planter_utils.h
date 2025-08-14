@@ -15,6 +15,7 @@
 #include <stdio.h>
 
 #include "driver/gpio.h"
+#include "freertos/FreeRTOS.h"
 #include "driver/temperature_sensor.h"
 #include "esp_mac.h"
 #include "esp_wifi.h"
@@ -22,8 +23,20 @@
 #include "esp_sntp.h"
 #include "esp_tls.h"
 #include "nvs_flash.h"
+#include "rest_api.h"
 #include "secrets.h"
 
+/**
+ * @brief Watering times
+ * 
+ */
+extern int watering_times[2];
+
+/**
+ * @brief Duration to keep solenoid valve open
+ * 
+ */
+extern int water_duration;
 
 /**
  * @def RGB_PIN
@@ -31,8 +44,9 @@
  * 
  * @note This pin number can be different for every development board. Please
  * check to make sure this matches your boards.
+ * 
  */
-#define RGB_PIN 48
+#define RGB_PIN 38
 
 /**
  * @brief Wait for button press with prompt message
@@ -40,14 +54,10 @@
  * Displays a prompt message and blocks execution of code until the button is
  * pressed.
  * 
- * @param str Prompt message to display
- * 
- * @return
- * - 0: button not pressed
- * - 1: button pressed
+ * @param[in] str Prompt message to display
  * 
  */
-int button_interrupt(char* str);
+void button_interrupt(char* str);
 
 /**
  * @brief Display RGB value on ESP32
@@ -55,10 +65,10 @@ int button_interrupt(char* str);
  * Sets the RGB to the specified color value and keeps the RGB on for a given
  * duration before turning it off.
  * 
- * @param r Red color intensity (0-255)
- * @param g Green color intensity (0-255)
- * @param b Blue color intensity (0-255)
- * @param delay Duration to keep RGB on (in ms)
+ * @param[in] r Red color intensity (0-255)
+ * @param[in] g Green color intensity (0-255)
+ * @param[in] b Blue color intensity (0-255)
+ * @param[in] delay Duration to keep RGB on (in ms)
  * 
  * @warning Ensure RGB_PIN is configured before calling.
  * 
@@ -79,6 +89,19 @@ void display_rgb(const int r, const int g, const int b, const int delay);
  * 
  */
 int init_wifi(void);
+
+/**
+ * @brief Check WiFi connection and reconnect if necessary.
+ * 
+ * Checks the WiFi connection on the ESP32 and reconnects to the AP if
+ * connection is dropped.
+ * 
+ * @retval 0 Connection valid
+ * @retval 1 Reconnected
+ * @retval -1 Reconnection fail
+ * 
+ */
+int check_wifi(void);
 
 
 /**
@@ -135,6 +158,24 @@ int get_current_hour(void);
  */
 int get_current_min(void);
 
+/**
+ * @brief Get ESP32 chip temperature
+ * 
+ * @return Current chip temperature as float
+ * 
+ */
 float get_chip_temp();
+
+/**
+ * @brief Update watering times
+ * 
+ * Communicates with the Firebase server and updates the watering values stored
+ * on the ESP32 if needed.
+ * 
+ * @retval 0 success
+ * @retval 1 fail
+ * 
+ */
+int parameter_comms();
 
 #endif
